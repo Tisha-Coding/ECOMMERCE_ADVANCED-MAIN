@@ -19,29 +19,21 @@ connectCloudinary();
 // ================== MIDDLEWARES ==================
 app.use(express.json());
 
-// ✅ Strong CORS for Production (Frontend + Admin)
+// 🔥 Temporary Wildcard CORS (Testing ke liye) - Sab allow karega
 app.use(cors({
-    origin: function (origin, callback) {
-        const allowedOrigins = [
-            "http://localhost:5173",
-            "http://localhost:5174",
-            "https://ecommerce-frontend-1j1s.onrender.com",
-            "https://ecommerce-admin-hl5r.onrender.com"
-        ];
-
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: true,                    // Sab origins allow
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-// Handle preflight requests
-app.options('*', cors());
+// Handle preflight OPTIONS requests
+app.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.sendStatus(200);
+});
 
 // chat route
 app.use("/api/chat", chatRoutes);
