@@ -17,8 +17,17 @@ connectDB();
 connectCloudinary();
 
 // middlewares
-app.use(express.json())
-app.use(cors())
+// middlewares
+app.use(express.json());
+
+// ✅ Updated CORS (yeh important hai)
+app.use(cors({
+    origin: [
+        'http://localhost:5173',     // local development ke liye
+        process.env.FRONTEND_URL     // Render pe frontend URL aayega
+    ],
+    credentials: true
+}));
 
 // chat route
 app.use("/api/chat", chatRoutes);
