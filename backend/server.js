@@ -19,21 +19,21 @@ connectCloudinary();
 // ================== MIDDLEWARES ==================
 app.use(express.json());
 
-// 🔥 Temporary Wildcard CORS (Testing ke liye) - Sab allow karega
+// ✅ Final Safe CORS Configuration
 app.use(cors({
-    origin: true,                    // Sab origins allow
+    origin: [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "https://ecommerce-frontend-1j1s.onrender.com",
+        "https://ecommerce-admin-hl5r.onrender.com"
+    ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
 }));
 
-// Handle preflight OPTIONS requests
-app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-    res.sendStatus(200);
-});
+// Handle preflight OPTIONS requests (bahut important)
+app.options("*", cors());
 
 // chat route
 app.use("/api/chat", chatRoutes);
