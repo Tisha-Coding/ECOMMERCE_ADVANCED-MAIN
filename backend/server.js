@@ -20,11 +20,13 @@ connectCloudinary();
 // middlewares
 app.use(express.json());
 
-// ✅ Updated CORS (yeh important hai)
+// Updated CORS
 app.use(cors({
     origin: [
-        'http://localhost:5173',     // local development ke liye
-        process.env.FRONTEND_URL     // Render pe frontend URL aayega
+        'http://localhost:5173',           // local frontend
+        'http://localhost:5174',           // local admin (agar hai)
+        process.env.FRONTEND_URL,          // Render frontend URL
+        "https://ecommerce-backend-vok2.onrender.com"  // apna backend (optional)
     ],
     credentials: true
 }));
