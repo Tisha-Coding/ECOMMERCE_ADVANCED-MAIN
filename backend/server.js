@@ -16,17 +16,22 @@ const port = process.env.PORT || 4000
 connectDB();
 connectCloudinary();
 
-// Middlewares section mein yeh replace kar do
+// ================== MIDDLEWARES ==================
+app.use(express.json());
+
+// ✅ Final CORS Configuration (Frontend + Admin dono ke liye)
 app.use(cors({
     origin: [
-        "http://localhost:5173",                          // local frontend
-        "http://localhost:5174",                          // local admin
-        "https://ecommerce-frontend-1j1s.onrender.com",   // customer frontend
-        "https://ecommerce-admin-hl5r.onrender.com",      // ← Admin URL (yeh add karo)
-        process.env.FRONTEND_URL,
-        process.env.ADMIN_URL
+        "http://localhost:5173",                          // Local Frontend
+        "http://localhost:5174",                          // Local Admin
+        "https://ecommerce-frontend-1j1s.onrender.com",   // Live Frontend
+        "https://ecommerce-admin-hl5r.onrender.com",      // Live Admin
+        process.env.FRONTEND_URL || "",                   // Render env variable
+        process.env.ADMIN_URL || ""                       // Render env variable
     ],
-    credentials: true
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 // chat route
@@ -34,14 +39,13 @@ app.use("/api/chat", chatRoutes);
 
 // api endpoints
 app.use('/api/user', userRouter);
-app.use('/api/product',productRouter);
-app.use('/api/cart',cartRouter);
-app.use('/api/order',orderRouter);
-app.use('/api/settings',settingsRouter);
+app.use('/api/product', productRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/order', orderRouter);
+app.use('/api/settings', settingsRouter);
 
-app.get('/',(req,res) =>
-{
+app.get('/', (req, res) => {
     res.send("API Working");
-})
+});
 
 app.listen(port, () => console.log("Server started on PORT : " + port));
