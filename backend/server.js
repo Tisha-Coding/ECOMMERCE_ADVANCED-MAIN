@@ -19,20 +19,29 @@ connectCloudinary();
 // ================== MIDDLEWARES ==================
 app.use(express.json());
 
-// ✅ Final CORS Configuration (Frontend + Admin dono ke liye)
+// ✅ Strong CORS for Production (Frontend + Admin)
 app.use(cors({
-    origin: [
-        "http://localhost:5173",                          // Local Frontend
-        "http://localhost:5174",                          // Local Admin
-        "https://ecommerce-frontend-1j1s.onrender.com",   // Live Frontend
-        "https://ecommerce-admin-hl5r.onrender.com",      // Live Admin
-        process.env.FRONTEND_URL || "",                   // Render env variable
-        process.env.ADMIN_URL || ""                       // Render env variable
-    ],
+    origin: function (origin, callback) {
+        const allowedOrigins = [
+            "http://localhost:5173",
+            "http://localhost:5174",
+            "https://ecommerce-frontend-1j1s.onrender.com",
+            "https://ecommerce-admin-hl5r.onrender.com"
+        ];
+
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 // chat route
 app.use("/api/chat", chatRoutes);
